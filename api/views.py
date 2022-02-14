@@ -13,13 +13,8 @@ class UsersAPI(viewsets.ModelViewSet):
     queryset = Users.objects.all().select_related()
     serializer_class = UsersModelSerializer
 
-    @action(detail=True, methods=['get'])
-    def active_team_users(self, request, pk=None):
-        user = Users.objects.get(pk=pk)
-        team = Teams.objects.get(pk=user.team_id.id)
-        if team.is_active:
-            users_team = Users.objects.filter(team_id=team)
-            serializer = UsersModelSerializer(users_team, many=True)
-            return Response(serializer.data)
-        else:
-            return Response({'msg': 'Inactive team'})
+    @action(detail=False, methods=['get'])
+    def active_team_users(self, request):
+        query_set = Users.objects.filter(team_id__is_active=True)
+        serializer = UsersModelSerializer(query_set, many=True)
+        return Response(serializer.data)
