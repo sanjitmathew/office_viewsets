@@ -15,7 +15,8 @@ class UsersAPI(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def active_team_users(self, request, pk=None):
-        team = Teams.objects.get(pk=pk)
+        user = Users.objects.get(pk=pk)
+        team = Teams.objects.get(pk=user.team_id.id)
         if team.is_active:
             users_team = Users.objects.filter(team_id=team)
             serializer = UsersModelSerializer(users_team, many=True)
