@@ -10,7 +10,7 @@ from rest_framework.response import Response
 # Create your views here.
 
 class UsersAPI(viewsets.ModelViewSet):
-    queryset = Users.objects.all().select_related()
+    queryset = Users.objects.all()
     serializer_class = UsersModelSerializer
 
     @action(detail=False, methods=['get'])
@@ -18,3 +18,8 @@ class UsersAPI(viewsets.ModelViewSet):
         query_set = Users.objects.filter(team_id__is_active=True)
         serializer = UsersModelSerializer(query_set, many=True)
         return Response(serializer.data)
+
+
+class TeamsAPI(viewsets.ModelViewSet):
+    queryset = Teams.objects.all()
+    serializer_class = TeamsModelSerializer 

@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from api.views import UsersAPI
+from api.views import UsersAPI, TeamsAPI
+
+
 router = DefaultRouter()
 router.register('users', UsersAPI, basename='users')
-
+router.register('teams',TeamsAPI, basename='teams')
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
 # ]
