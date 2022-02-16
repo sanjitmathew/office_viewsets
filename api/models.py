@@ -13,9 +13,9 @@ class Teams(models.Model):
 class Users(models.Model):
     name = models.CharField(max_length=254)
     photo = models.ImageField(upload_to='user_photos',blank=True)
-    email = models.EmailField(max_length=254)
-    ph_no = models.CharField(max_length=15)
-    team_id = models.ManyToManyField(Teams)
+    email = models.EmailField(max_length=254,blank=True)
+    ph_no = models.CharField(max_length=15,blank=True)
+    team_id = models.ManyToManyField(Teams,blank=True)
 
     def __str__(self):
         return self.name
