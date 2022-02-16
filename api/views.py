@@ -3,7 +3,6 @@ from .serializers import UsersModelSerializer, TeamsModelSerializer
 from rest_framework import viewsets
 from .models import Users, Teams
 from rest_framework.decorators import action
-from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 
 
@@ -22,4 +21,4 @@ class UsersAPI(viewsets.ModelViewSet):
 
 class TeamsAPI(viewsets.ModelViewSet):
     queryset = Teams.objects.all()
-    serializer_class = TeamsModelSerializer 
+    serializer_class = TeamsModelSerializer
