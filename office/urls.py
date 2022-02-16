@@ -16,19 +16,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from api.views import UsersAPI, TeamsAPI
+from api.views import ( UsersAPI,
+                        TeamsAPI,
+                        CustomUsersAPI, )
 from django.conf import settings
 from django.conf.urls.static import static
 
 
 router = DefaultRouter()
 router.register('users', UsersAPI, basename='users')
+router.register('custom/users', UsersAPI, basename='customusers')
 router.register('teams',TeamsAPI, basename='teams')
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-# ]
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
 
-urlpatterns = router.urls
+urlpatterns += router.urls
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
