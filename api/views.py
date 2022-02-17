@@ -6,6 +6,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 import json
 
+IMG_SIZE = 2 * 1024 * 1024
+
 # Create your views here.
 
 class UsersAPI(viewsets.ModelViewSet):
@@ -52,6 +54,7 @@ class CustomUsersAPI(viewsets.ViewSet):
         return Response(serializer.data)
 
     def update(self, request, pk=None):
+        global IMG_SIZE
         user = Users.objects.filter(pk=pk).first()
         if user:
             name = request.POST.get('name','')
@@ -69,6 +72,10 @@ class CustomUsersAPI(viewsets.ViewSet):
                 user.ph_no = ph_no
             if 'photo' in request.FILES:
                 photo = request.FILES['photo']
+                if photo.size > IMG_SIZE:
+                    return Response({'photo': 'Size exceeded 2MB'})
+                if not photo.name.endswith(('.jpeg','.png')):
+                    return Response({'photo': 'Only jpeg and png allowed'})
                 user.photo = photo
             team_ids = request.POST.get('team_ids','')
             if team_ids:
