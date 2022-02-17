@@ -42,11 +42,49 @@ class CustomUsersAPI(viewsets.ViewSet):
                     ph_no=ph_no,
                     photo=photo)
         user.save()
-        team_names = data.get('team_names','')
-        if team_names:
-            for team_name in team_names:
-                team_id = Teams.objects.filter(name=team_name).first()
+        team_ids = data.get('team_ids','')
+        if team_ids:
+            for id in team_ids:
+                team_id = Teams.objects.filter(id=id).first()
                 user.team_id.add(team_id)
                 user.save()
         serializer = UsersModelSerializer(user)
         return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        user = Users.objects.filter(pk=pk).first()
+        if user:
+            name = request.POST.get('name','')
+            if user.name != name:
+                user.name = name
+            email = request.POST.get('email','')
+            if user.email != email:
+                user.email = email
+            ph_no = request.POST.get('ph_no','')
+            if user.ph_no != ph_no:
+                if not ph_no.isnumeric():
+                    return Response({'ph_no': 'phone no: should be of digits'})
+                if len(ph_no) < 10 or len(ph_no) > 15:
+                    return Response({'ph_no': 'phone no: should have 10 to 15 digits'})
+                user.ph_no = ph_no
+            if 'photo' in request.FILES:
+                photo = request.FILES['photo']
+                user.photo = photo
+            team_ids = request.POST.get('team_ids','')
+            if team_ids:
+                team_ids = team_ids.split(',')
+                team_ids_new = [int(i) for i in team_ids]
+                team_ids_obj = user.team_id.all()
+                team_ids_old = [i.id for i in team_ids_obj]
+                if set(team_ids_old) != set(team_ids_new):
+                    for i in team_ids_obj:
+                        user.team_id.remove(i)
+                    for i in team_ids_new:
+                        team = Teams.objects.filter(pk=i).first()
+                        if team:
+                            user.team_id.add(team)
+            user.save()
+            serializer = UsersModelSerializer(user)
+            return Response(serializer.data)
+        else:
+            return Response({'msg': 'No such user'})
